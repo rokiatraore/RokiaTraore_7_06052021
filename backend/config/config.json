@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "rokiatraore",
+    "database": "database_development_oc",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "rokiatraore",
+    "database": "database_test_oc",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "rokiatraore",
+    "database": "database_production_oc",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
