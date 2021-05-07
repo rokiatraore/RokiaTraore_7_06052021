@@ -1,7 +1,7 @@
 //Importations
 const express = require('express');
 const app = express();
-const usersRouter = require('./routes/users')
+const usersRouter = require('./routes/users');
 
 //Ajout des headers pour autoriser l'accès à l'API
 app.use('/',(req, res, next) => {
