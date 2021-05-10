@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 const usersRouter = require('./routes/users');
+const messagesRouter = require('./routes/messages');
 
 //Ajout des headers pour autoriser l'accès à l'API
 app.use('/',(req, res, next) => {
@@ -18,5 +19,6 @@ app.use(express.json());
 
 //Enregistrer les routeurs pour les demandes effectuées vers leurs routes
 app.use('/api/', usersRouter);
+app.use('/api/', messagesRouter);
 
 module.exports = app;

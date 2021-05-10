@@ -1,21 +1,34 @@
 const jwt = require('jsonwebtoken');
+const JWT_SIGN_SECRET = 'rokiaTraore';
 
-module.exports = (req, res, next) => {
-    try {
-        //Récupérer le token de l'autorisation
-        const token = req.headers.authorization.split(' ')[1];
-        const decodedToken = jsonwebtoken.verify(token, 'RANDOM_SECRET_KEY');
-        //Récupérer le userId du token
-        const userId = decodedToken.userId;
-        //Vérifier que l'userId du token correspond à celui de la requête
-        if (req.body.userId && req.body.userId !== userId) {
-            throw 'User ID non valable';
-        } else {
-            //Dans le cas où l'utilisateur est authentifié, passer l'éxécution
-            next();
+
+//Exportations des fonctions
+module.exports = {
+    generateTokenForUser: function(userData) {
+        return jwt.sign({
+            userId: userData.id,
+            isAdmin: userData.isAdmin,
+        },
+        JWT_SIGN_SECRET,
+        {
+            expiresIn: '1h'
+        })
+    },
+    //Récupérer le token
+    parseAuthorization : function(authorization) {
+        return (authorization != null) ? authorization.replace('Bearer ', '') : null;
+    },
+    //Récupérer la userId
+    getUserId: function(authorization) {
+        
+        let token = module.exports.parseAuthorization(authorization);
+        if (token != null){
+            try {
+                let jwtToken = jwt.verify(token, JWT_SIGN_SECRET);
+                if(jwtToken != null)
+                    userId = jwtToken.userId;
+            } catch(err){ }
         }
-    } catch (error){
-        res.status(401).json({ error: error | 'Requête non authentifiée'})
+        return userId;
     }
-
-};
+}

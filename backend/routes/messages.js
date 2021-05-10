@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-const auth = require('../middleware/auth'); 
-const profilCtrl = require('../controllers/messages');
+const messageCtrl = require('../controllers/messages');
 
 //routes
+router.get('/messages/new', messageCtrl.createMessage);
+router.get('/messages/all', messageCtrl.getAllMessage
+);
+
+
 
 
 module.exports = router;
