@@ -3,6 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
+  
   class Message extends Model {
     /**
      * Helper method for defining associations.
@@ -19,9 +20,8 @@ module.exports = (sequelize, DataTypes) => {
   };
   Message.init({
     title: DataTypes.STRING,
-    content: DataTypes.STRING,
     attachment: DataTypes.STRING,
-    comments: DataTypes.INTEGER
+    content: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Message',

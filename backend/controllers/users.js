@@ -1,7 +1,7 @@
 //Importations
 const models = require('../models');
 const bcrypt = require('bcrypt');
-const jwtAuth = require('../middleware/auth'); 
+const utilsAuth = require('../utils/jwtUtils'); 
 
 exports.signup = (req, res) => {
     //Trouver l'utilisateur ayant le même email dans la bdd
@@ -16,7 +16,7 @@ exports.signup = (req, res) => {
                         email: req.body.email,
                         username: req.body.username,
                         password: hash,
-                        isAdmin: 0
+                        isAdmin: false
                     })
                     //Enregistrer dans la base de données
                     .then( newUser => res.status(201).json({ 
@@ -51,7 +51,8 @@ exports.login = (req, res) => {
                     res.status(200).json({
                         userId: userFound.id,
                         //Authentification : encoder un nouveau token
-                        token: jwtAuth.generateTokenForUser(userFound)
+                        token: utilsAuth.generateTokenForUser(userFound),
+                        isAdmin: userFound.isAdmin
                     });
                 })
                 .catch(error => res.status(500).json({ error }))
@@ -61,11 +62,10 @@ exports.login = (req, res) => {
 
 exports.getProfile = (req,res) => {
     //Récupérer le header d'autorisation de la requête
-    let headerAuth = req.headers['authorization'];
-    let userId = jwtAuth.getUserId(headerAuth);
+    let userId = utilsAuth.getUserId(req.headers.authorization);
 
     models.User.findOne({
-        attributes: ['id', 'email', 'username'],
+        attributes: ['id', 'email', 'username', 'isAdmin'],
         where: {id: userId}
     })
         .then(user => {
