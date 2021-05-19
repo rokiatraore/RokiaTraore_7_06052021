@@ -17,11 +17,9 @@ module.exports = (sequelize, DataTypes) => {
          
         }, 
       }),
-        models.Comment.belongsTo(models.Message, 
-          { foreignKey: {
-            allowNull: false,
-               
-          },
+        models.Comment.belongsTo(models.Message, {
+          foreignKey: 'messageId',
+          as: 'post'
         })
     }
   };
@@ -29,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     messageId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
     message: DataTypes.STRING,
+    name: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Comment',
