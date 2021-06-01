@@ -13,19 +13,18 @@ module.exports = {
         references: {
           model: 'Messages',
           key: 'id'
-        }
+        },
+        onDelete: 'cascade'
       },
       userId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',
           key: 'id'
-        }
+        },
+        onDelete: 'cascade'
       },
       message: {
-        type: Sequelize.STRING
-      },
-      name: {
         type: Sequelize.STRING
       },
       createdAt: {

@@ -48,9 +48,6 @@ exports.modifyMessage = (req, res) => {
     
     let headerAuth = req.headers['authorization'];
     let userId = jwtAuth.getUserId(headerAuth);
-
-
-    
 }
 
 exports.deleteMessage = (req, res) => {

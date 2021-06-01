@@ -2,6 +2,8 @@
 const models = require('../models');
 const bcrypt = require('bcrypt');
 const utilsAuth = require('../utils/jwtUtils'); 
+const db = require('../utils/configDatabase')
+
 
 exports.signup = (req, res) => {
     //Trouver l'utilisateur ayant le même email dans la bdd
@@ -78,3 +80,20 @@ exports.getProfile = (req,res) => {
         .catch(error =>  res.status(500).json({ error }))
 };
 
+exports.deleteProfile = (req,res) => {
+    let userId = utilsAuth.getUserId(req.headers.authorization);
+
+    models.User.destroy ({
+        where: {id: userId},
+        force: true
+    })
+    // models.Comment.destroy({
+    //     where:{ id: userId}
+    // })
+    // models.Message.destroy({
+    //     where:{ id: userId}
+    // })
+
+    .then(() => res.status(200).json({ message: 'Compte supprimé !'}))
+    .catch(error => res.status(400).json({ error }));
+}
