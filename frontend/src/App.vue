@@ -1,6 +1,7 @@
 <template>
 <div id="app">
-  <h1>S'enregistrer</h1>
+  <!-- <router-link to="/signup">S'enregistrer</router-link>
+  <router-link to="/login">Se connecter</router-link> -->
     <router-view/>
 </div>
 </template>
