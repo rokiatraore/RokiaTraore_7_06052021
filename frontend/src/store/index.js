@@ -6,29 +6,63 @@ const instance = axios.create({
     baseURL: 'http://localhost:3000/api/'
 })
 
+let user = localStorage.getItem('user');
+if (!user) {
+    user = {
+        userId : '',
+        token : '',
+    };
+} else {
+    try {
+        user = JSON.parse(user)
+        instance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+    } catch (ex) {
+        user = {
+            userId : '',
+            token : '',
+        };
+    }
+
+}
+
 const store = createStore ({
     state: {
         status: '',
-        user: {
-            userId : '',
-            token : '',
-        },
+        user: user,
         userInfos: {
             username: '',
             email: '',
             id: ''
-        }
+        },
+        postInfos: {
+            title: '',
+            content:'',
+            attachment: '',
+            comments:[]
+        },
     },
     mutations: {
         setStatus: (state, status) => {
             state.status = status;
         },
         logUser: (state, user) => {
-            instance.defaults.headers.common['Authorization'] = user.token;
+            instance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+            localStorage.setItem('user', JSON.stringify(user));
             state.user = user;
         },
         userInfos: (state, userInfos) => {
             state.userInfos = userInfos;
+        },
+        logout: (state) => {
+            state.user = {
+                userId : '',
+                token : '',
+            }
+            localStorage.removeItem('user');
+        },
+        postInfos: (state, postInfos) => {
+            instance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+            state.postInfos = postInfos
         },
     },
     //Création des méthodes
@@ -70,6 +104,15 @@ const store = createStore ({
                 .catch(error => {
                     console.log(error)
                 });
+        },
+        getPosts : ({commit}) => {
+            instance.get('/messages')
+            .then(response => {
+                commit('postInfos', response.data)
+            })
+            .catch(error => {
+                console.log(error)
+            });
         }
     },
 })

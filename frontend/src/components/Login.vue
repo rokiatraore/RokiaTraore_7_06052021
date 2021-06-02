@@ -46,6 +46,13 @@ export default {
       password:'',
     }
   },
+  mounted: function () {
+    //Rediriger l'utilisateur sur la page profile s'il est authentifié
+    if (this.$store.state.user.userId != ""){
+      this.$router.push('/profile');
+      return;
+    }
+  },
   computed: {
     ...mapState(['status'])
   },

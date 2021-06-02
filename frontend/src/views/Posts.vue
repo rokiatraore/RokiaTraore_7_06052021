@@ -1,5 +1,5 @@
 <template>
-  <div class="homeProfile">
+  <div class="homePosts">
     <Posts />
   </div>
 </template>
@@ -9,7 +9,7 @@
 import Posts from '@/components/Posts.vue'
 
 export default {
-  name: 'HomeProfile',
+  name: 'HomePosts',
   components: {
     Posts,
   }

@@ -1,42 +1,38 @@
 <template>
-<div>
-    <div v-for="(post, index) in posts" :key=index>
-        <h1>{{ post.title }}</h1>
-        <img src="{{ post.attachment }}" alt="image Post" />
+<div >
+    <div v-for="post in postInfos" :key="post.id">
+        <h1 >{{ post.title }}</h1>
+        <img v-bind:src="post.attachment" alt=""/>
         <p>{{ post.content }}</p>
-        <div>
-            <p>{{ post.comments }}</p>
-        </div>
+        <p>{{ post.comments }}</p>
     </div>
 </div>
 </template>
 
 <script>
-import axios from 'axios'
-
+import { mapState } from "vuex"
 export default {
     name: 'Posts',
-    data() {
-      return {
-          posts : null,
+    mounted: function () {
+        console.log(this.$store.state.postInfos)
+         //Retourner sur la page de connexion si le user n'est pas authentifié
+        if (this.$store.state.user.userId == ""){
+            this.$router.push('/login');
+            return;
         }
+        this.$store.dispatch('getPosts')
     },
-    mounted(){
-        axios.get('http://localhost:3000/api/messages/',{
-            headers: {
-                Authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        })
-        .then(response => {
-            this.posts = response.data
-            console.log(this.posts)
-        })
-        .catch (error => console.log(error))
-    }
+    computed: {
+        ...mapState([
+           'postInfos'
+        ])
+    },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-
+img {
+    width: 90px;
+}
 </style>
