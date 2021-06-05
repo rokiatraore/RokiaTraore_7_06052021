@@ -9,7 +9,7 @@
 import Profile from '@/components/Profile.vue'
 
 export default {
-  name: 'homeProfile',
+  name: 'ProfileBody',
   components: {
     Profile,
   }

@@ -1,5 +1,7 @@
-import { createStore } from 'vuex'
+import Vuex from 'vuex'
+import Vue from 'vue'
 import axios from 'axios'
+Vue.use(Vuex)
 
 //Configuration URL API
 const instance = axios.create({
@@ -22,10 +24,8 @@ if (!user) {
             token : '',
         };
     }
-
 }
-
-const store = createStore ({
+const store = new Vuex.Store ({
     state: {
         status: '',
         user: user,
@@ -39,6 +39,11 @@ const store = createStore ({
             content:'',
             attachment: '',
             comments:[]
+        },
+        createPost: {
+            title: '',
+            attachment: '',
+            content: '',
         },
     },
     mutations: {
@@ -64,9 +69,14 @@ const store = createStore ({
             instance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
             state.postInfos = postInfos
         },
+        createPost: (state, createPost) => {
+            instance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+            state.createPost = createPost;
+        }
     },
     //Création des méthodes
     actions: {
+        //User
         login: ({ commit }, userInfos) => {
             return new Promise ((resolve, reject) =>{
                 commit('setStatus', 'loading');
@@ -105,6 +115,8 @@ const store = createStore ({
                     console.log(error)
                 });
         },
+
+        //Posts
         getPosts : ({commit}) => {
             instance.get('/messages')
             .then(response => {
@@ -113,7 +125,18 @@ const store = createStore ({
             .catch(error => {
                 console.log(error)
             });
-        }
+        },
+
+        createPost : ({commit}) => {
+            instance.post('/messages/new')
+            .then(response => {
+                commit('createPost', response.data)
+            })
+            .catch(error => {
+                console.log(error)
+            });
+        },
+        
     },
 })
 

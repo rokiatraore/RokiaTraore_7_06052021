@@ -1,5 +1,8 @@
 <template>
 <div>
+<router-link to="/posts">Posts</router-link>
+
+
     <h1>Espace Personnel</h1>
     <p> Username : {{ user.username }}</p>
     <p>Adresse mail : {{ user.email }}</p>
