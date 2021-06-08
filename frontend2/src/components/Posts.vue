@@ -16,19 +16,11 @@
             <div class="post-content mb-2">
                 <p>{{ post.content }}  </p>
             </div>
-            <div class="post-comment mb-2">
-                <p v-for="comment in post.comments" :key="comment.id">{{ comment.message }}</p>
+            <div>
+                <router-link :to="`/post/${post.id}`">Voir le post</router-link>
             </div>
-
         </div>
     </div>
-    <!-- <div v-for="post in postInfos" :key="post.id">
-        <h1 ></h1>
-        
-        <p>{{ post.content }}</p>
-        <p v-for="comment in post.comments" :key="comment.id">{{ comment.message }}</p>
-    </div> -->
-    
 </div>
 </template>
 

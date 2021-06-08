@@ -92,7 +92,7 @@ export default {
     }
   },
   mounted: function () {
-    //Rediriger l'utilisateur sur la page profile s'il est authentifié
+    //Rediriger l'utilisateur sur la page posts s'il est authentifié
     if (this.$store.state.user.userId != ""){
       this.$router.push('/posts');
       return;
@@ -116,7 +116,7 @@ export default {
         password: this.password
       })
       .then(() => {
-        //Renvoyer vers la page profile
+        //Renvoyer vers la pagposts
         self.$router.push('/posts')
       })
       .catch(error => {

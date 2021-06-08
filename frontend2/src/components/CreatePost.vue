@@ -1,52 +1,71 @@
 <template>
 <div>
     <div>
-      <input type="text" v-model="title" placeholder="Entrer votre Email"/>
+      <input type="text" v-model="title" placeholder="Titre"/>
     </div>
     <div>
-        <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
-
+        <label>Télécharger une image</label>
+        <input type="file" id="file" ref="file" @change="fileSelected()">
+        <div class="preview">
+            <img id="file-preview">
+        </div>
     </div>
     <div>
-      <input type="text" v-model="content" placeholder="Entrer votre mot de passe"/>
+      <input type="text" v-model="content" placeholder="message"/>
     </div>
-     <button  @click="createPost">
+    <button  @click="submitPost()">
         <span>Poster !</span>
-      </button>
+    </button>
 </div>
 
 </template>
 
 <script>
-
+import axios from 'axios'
 export default {
     name: 'CreateOnePost',
     data (){
         return{
             title: '',
             file: '',
-            content:''
+            content:'',
+            userId:''
         }
     },
     methods: {
-        handleFileUpload(){
+        fileSelected(){
             this.file = this.$refs.file.files[0];
+            let src = URL.createObjectURL(this.file);
+            let preview = document.getElementById('file-preview');
+            preview.src = src;
+            preview.style.display = "block";
+            console.log(this.file)
         },
-        createPost() {
-            this.$store.dispatch('createPost', {
-                title: this.title,
-                attachment: this.file,
-                content: this.content
+        submitPost() {
+            //Récupérer les informations du message
+            const formData = new FormData();
+            formData.append('image', this.file)
+            formData.append('content', this.content)
+            formData.append('title', this.title)
+
+            //Récupérer le Token
+            let objUser= localStorage.getItem("user");
+            let objJson = JSON.parse(objUser);
+            
+            axios.post('http://localhost:3000/api/messages/new', formData, {
+                headers: {
+                    "Authorization": "Bearer " + objJson.token
+            }
             })
-            .then(() => {
-                console.log('ok')
+             .then(() => {
+                alert('Votre Message a été posté !')
+                this.$router.push('/posts');
             })
             .catch(error => {
                 console.log(error)
             })
         }
     }
-
 }
 </script>
 
