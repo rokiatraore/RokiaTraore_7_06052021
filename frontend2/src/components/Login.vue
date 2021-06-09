@@ -1,38 +1,4 @@
 <template>
-  <!-- <div class="login">
-    
-    <h1 v-if="mode =='login'">Connexion</h1>
-    <h1 v-else>Inscription</h1>
-    <p v-if="mode =='login'">Pas encore de compte ?<span @click="switchToCreateAccount()">Créer un compte</span></p>
-    <p v-else>J'ai un compte<span @click="switchToLogin()">Se connecter</span></p>
-
-    <div>
-      <input type="text" v-model="email" placeholder="Entrer votre Email"/>
-    </div>
-    <div v-if="mode =='create'">
-    <input type="text" v-model="username" placeholder="Entrer votre username"/>
-    </div>
-    <div>
-      <input type="password" v-model="password" placeholder="Entrer votre mot de passe"/>
-    </div>
-    <div v-if="mode == 'login' && status == 'errorLogin'">
-      Adresse mail et/ou mot de passe invalide
-    </div>
-    <div v-if="mode == 'create' && status == 'errorCreate'">
-      Adresse mail et/ou username déja utilisé
-    </div>
-    <div>
-      <button v-if="mode =='login'" @click="login">
-        <span v-if="status == 'loading'">Connexion en cours</span>
-        <span v-else>Connexion</span>
-      </button>
-      <button v-else  @click="createAccount">
-        <span v-if="status == 'loading'">Création en cours</span>
-        <span v-else>Créer mon compte</span>
-      </button>
-    </div>
-  </div> -->
-
   <div class="container">
     <div class="row content">
       <b-row class="justify-content-md-center">

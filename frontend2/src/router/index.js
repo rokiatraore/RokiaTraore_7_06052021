@@ -1,7 +1,7 @@
 import Login from '../views/Login.vue'
 import Profile from '../views/Profile.vue'
 import Posts from '../views/Posts.vue'
-import CreatePost from '../views/CreatePost.vue'
+import GetOnePost from '../views/GetOnePost.vue'
 
 const routes = [
   {
@@ -20,9 +20,9 @@ const routes = [
     component: Posts
   },
   {
-    path: '/newpost/',
-    name: 'CreatePostBody',
-    component: CreatePost,
+    path: '/post/:id',
+    name: 'GetOnePostBody',
+    component: GetOnePost,
   }
 ]
 

@@ -1,6 +1,5 @@
 <template>
-  <div class="homePosts">
-   
+  <div class="homeGetOnePost">
     <b-navbar toggleable="lg" type="light" variant="light">
       <b-navbar-brand href="/posts"><img :src="require(`@/assets/icon-left-font-monochrome-black.png`) " class="img-fluid" alt="logo"/>
     </b-navbar-brand>
@@ -17,29 +16,21 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <Posts />
+    <GetOnePost />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Posts from '@/components/Posts.vue'
+import GetOnePost from '@/components/GetOnePost.vue'
 
 export default {
-  name: 'PostsBody',
+  name: 'GetOnePostBody',
   components: {
-    Posts,
-  },
-  methods: {
-        logout: function () {
-            this.$store.commit('logout');
-            this.$router.push('/');
-        }
-    }
+    GetOnePost,
+  }
 }
-
 </script>
-
 <style lang="scss" scoped>
 .img-fluid {
   width: 150px

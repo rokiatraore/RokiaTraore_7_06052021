@@ -3,6 +3,7 @@ import Vue from 'vue'
 import axios from 'axios'
 Vue.use(Vuex)
 
+
 //Configuration URL API
 const instance = axios.create({
     baseURL: 'http://localhost:3000/api/'
@@ -40,11 +41,12 @@ const store = new Vuex.Store ({
             attachment: '',
             comments:[]
         },
-        createPost: {
-            title: '',
-            attachment: '',
-            content: '',
-        },
+    },
+    getters : {
+        //Renvoi le post selon son ID
+        post: (state) => (id) => {
+            return state.postInfos.find(post => post.id === id);
+        }
     },
     mutations: {
         setStatus: (state, status) => {
@@ -74,6 +76,7 @@ const store = new Vuex.Store ({
             state.createPost = createPost;
         }
     },
+    
     //Création des méthodes
     actions: {
         //User
@@ -126,17 +129,6 @@ const store = new Vuex.Store ({
                 console.log(error)
             });
         },
-
-        createPost : ({commit}) => {
-            instance.post('/messages/new')
-            .then(response => {
-                commit('createPost', response.data)
-            })
-            .catch(error => {
-                console.log(error)
-            });
-        },
-        
     },
 })
 
