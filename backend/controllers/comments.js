@@ -54,7 +54,7 @@ exports.deleteComment = async (req,res) => {
     
         if(userId === comment.UserId) {
             models.Comment.destroy({where:{ id: req.params.id}});
-            res.status(200).json({ message: 'Commentaire supprimée !'})
+            res.status(200).json({ message: 'Commentaire supprimé !'})
         } 
         else {
             res.status(400).json({message : "Vous n'avez pas les droits requis"})

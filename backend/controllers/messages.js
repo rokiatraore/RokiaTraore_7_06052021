@@ -57,15 +57,38 @@ exports.getOneMessage = (req, res) => {
         .catch(error => res.status(404).json({ error }))
 }
 
-exports.modifyMessage = (req, res) => {
-    
-    let headerAuth = req.headers['authorization'];
-    let userId = jwtAuth.getUserId(headerAuth);
+exports.modifyMessage = async (req, res) => {
+  try {
+    //Récupérer le header d'autorisation de la requête
+    let userId = await utilsAuth.getUserId(req.headers.authorization);
+    let post = await models.Message.findOne({where: { id: req.params.id}});
+
+    if(userId === post.UserId) {
+      models.Message.update(
+        { title: req.body.title, content: req.body.content } || {
+          ...req.body,
+          attachment: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+        },
+        {
+          where: {
+              userId: userId,
+              id: req.params.id,
+          },
+        }
+      )
+      res.status(201).json({ message : "Votre post a été modifié"})
+    } else {
+      res.status(400).json({ message: "Vous n'avez pas les droits requis" });
+    }
+  } catch (error) {
+    return res.status(500).send({ error: "Erreur serveur" });
+  }
 }
 
 exports.deleteMessage = async (req, res) => {
     
-  try {//Récupérer le header d'autorisation de la requête
+  try {
+    //Récupérer le header d'autorisation de la requête
     let userId = await utilsAuth.getUserId(req.headers.authorization);
     let post = await models.Message.findOne({where: { id: req.params.id}});
 

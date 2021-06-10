@@ -80,20 +80,61 @@ exports.getProfile = (req,res) => {
         .catch(error =>  res.status(500).json({ error }))
 };
 
+exports.getAllProfiles = (req, res) => {
+    models.User.findAll()
+    .then(messages => res.status(200).json(messages))
+    .catch(error => res.status(400).json({ error }));
+    
+}
+
+exports.getOneProfile = (req, res) => {
+    models.User.findOne({
+        where: { id: req.params.id}
+    })
+        .then(message => res.status(200).json(message))
+        .catch(error => res.status(404).json({ error }))
+}
+
+exports.modifyProfile = async (req, res) => {
+    let userId = utilsAuth.getUserId(req.headers.authorization);
+
+    models.User.update(
+        {
+           username: req.body.username,
+           email: req.body.email,
+        },
+        {
+           where: {
+              id: userId,
+           },
+        }
+     )
+        .then(() =>
+           res.status(201).json({ message: "Votre profile a été modifié avec succès !" })
+        )
+        .catch((error) => res.status(500).json(error));
+}
+
 exports.deleteProfile = (req,res) => {
     let userId = utilsAuth.getUserId(req.headers.authorization);
 
-    models.User.destroy ({
-        where: {id: userId},
-        force: true
-    })
-    // models.Comment.destroy({
-    //     where:{ id: userId}
-    // })
-    // models.Message.destroy({
-    //     where:{ id: userId}
-    // })
+    models.Comment.destroy({
+        where: { id: userId },
+     })
+        
 
-    .then(() => res.status(200).json({ message: 'Compte supprimé !'}))
-    .catch(error => res.status(400).json({ error }));
+    models.Message.destroy({
+        where: { id: userId },
+    })
+        
+
+    models.User.destroy({
+        where: { id: userId },
+     })
+        .then(() => res.status(200).json({ message: "Votre profile a été supprimé  !" }))
+        .catch((err) => res.status(400).json({ err }));
+
+
 }
+
+
