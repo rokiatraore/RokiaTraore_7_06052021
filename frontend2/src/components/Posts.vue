@@ -1,46 +1,76 @@
 <template>
+    <div class="container gedf-wrapper">
+        <div class="row">
+            <div class="col-md-1">
+            </div>
+            <div class="col-md-10 gedf-main">
+                <!--- Submit Post-->
+                <div class="card gedf-card">
+                    <div class="card-header card-header-submit">
+                        <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Poster une publication</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                                <div class="form-group">
+                                    <textarea class="form-control" id="message" rows="1" placeholder="Titre du Post" v-model="title"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control" id="message" rows="3" placeholder="Contenu du Post" v-model="content" ></textarea>
+                                </div>
+                            </div>
+                            <div class="upload-image">
+                                <label>Télécharger une image</label>
+                                <input type="file" id="file" ref="file" @change="fileSelected()">
+                                <div class="preview">
+                                    <img id="file-preview">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn-toolbar justify-content-between">
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-poster" @click="submitPost()">Poster</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Submit Post end-->
 
-<div class="container">
-    <div class="containerCreatePost">
-        <div>
-        <input type="text" v-model="title" placeholder="Titre"/>
-        </div>
-        <div>
-            <label>Télécharger une image</label>
-            <input type="file" id="file" ref="file" @change="fileSelected()">
-            <div class="preview">
-                <img id="file-preview">
+                <!--- Post-->
+                <div class="card gedf-card" v-for="post in postInfos" :key="post.id">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="mr-2">
+                                    <img class="rounded-circle" width="45" src="@/assets/user.png" alt="">
+                                </div>
+                                <div class="ml-2">
+                                    <div class="h7 text-muted"> Nom d'utilisateur</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-body">
+                        <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ post.createdAt }} </div>
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <img v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
+                            <p class="card-text">{{ post.content }}</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <router-link :to="`/post/${post.id}`" class="getPost"><i class="far fa-eye"></i> Voir le post</router-link>
+                    </div>
+                </div>
+                <!-- Post End-->
             </div>
-        </div>
-        <div>
-        <input type="text" v-model="content" placeholder="message"/>
-        </div>
-        <button  @click="submitPost()">
-            <span>Poster !</span>
-        </button>
-    </div>
-    <div class="row main-row p-2" v-for="post in postInfos" :key="post.id">
-        <div class="col-lg-4 col-md-12 col-sm-12">
-            <div class="blog-img">
-                <img v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
-            </div>
-        </div>
-        <div class="col-lg-8 col-md-12 col-sm-12">
-            <div class="post-title mb-3">
-                <h2>{{ post.title }}</h2>
-            </div>
-            <div class="post-date mb-2">
-                <span>3 Janvier</span>
-            </div>
-            <div class="post-content mb-2">
-                <p>{{ post.content }}  </p>
-            </div>
-            <div>
-                <router-link :to="`/post/${post.id}`">Voir le post</router-link>
+            <div class="col-md-1">
             </div>
         </div>
     </div>
-</div>
 </template>
 
 <script>
@@ -96,7 +126,7 @@ export default {
             })
              .then(() => {
                 alert('Votre Message a été posté !')
-                this.$router.push('/posts');
+                //this.$router.push('/posts');
             })
             .catch(error => {
                 console.log(error)
@@ -112,28 +142,33 @@ export default {
 .container {
     font-family: 'Roboto', sans-serif;
 }
-
-.main-row {
-    margin: 8%;
-    background-color: white;
-    box-shadow: 0 0 10px 10px rgba(0,0,0,0.5);
-    border-radius: 0.5rem;
+.gedf-wrapper {
+    margin-top: 0.97rem;
+}
+.gedf-main {
+    padding-left: 4rem;
+    padding-right: 4rem;
+}
+.gedf-card {
+    margin-bottom: 2.77rem;
+}
+.card-header-submit{
+    background-color: #fff !important;
+}
+.card-header{
+    background-color:#f0b27a54 ;
 }
 
-img {
-    width: 70%;
-    height: 100%;
-    transform: translateY(-30px);
-    object-fit: cover;
-    border-radius: 0.5rem;
-    box-shadow: 0 0 8px 3px rgba(0,0,0,.3) ;
-}
-span {
-    color: #962c51;
+.form-group  {
+    padding: 10px;
 }
 
-.blog-title > h2{
-    font-style: normal;
-    font-weight: 400;
+.upload-image{
+    padding: 10px;
+}
+
+.getPost {
+    text-decoration: none;
+    color: black;
 }
 </style>

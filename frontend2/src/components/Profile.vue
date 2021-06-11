@@ -1,57 +1,74 @@
 <template>
-<div>
-    <b-navbar toggleable="lg" type="light" variant="light">
-        <b-navbar-brand href="/posts"><img :src="require(`@/assets/icon-left-font-monochrome-black.png`) " class="img-fluid" alt="logo"/>
-        </b-navbar-brand>
-        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-        <b-collapse id="nav-collapse" is-nav>
-            <b-navbar-nav class="ml-auto">
-            <b-nav-item-dropdown right>
-                <template #button-content>
-                <em>User</em>
-                </template>
-                <b-nav-item href="/profile">Profile</b-nav-item>
-                <b-dropdown-item @click="logout()" href="#">Déconnexion</b-dropdown-item>
-            </b-nav-item-dropdown>
-            </b-navbar-nav>
-        </b-collapse>
-        </b-navbar>
+    <div class="container bootstrap snippets bootdey">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel rounded shadow">
+                    <div class="panel-body">
+                        <div class="inner-all">
+                            <ul class="list-unstyled">
+                                <li class="text-center">
+                                    <img class="img-fluid" src="@/assets/user.png" alt="Marint month">
+                                </li>
+                                <li class="text-center">
+                                    <h4 class="text-capitalize">{{ user.username }}</h4>
+                                    <p class="text-muted text-capitalize"><i class="far fa-envelope"></i> {{ user.email }}</p>
 
-        <div class="container">
-            <div class="row d-flex justify-content-center">
-                <div class="col-md-10 mt-5 pt-5">
-                    <div class="row z-depth-3">
-                        <div class="col-sm-4 bg-info rounded-left">
-                            <div class="card-block text-center text-white">
-                                <i class="fas fa-user-tie fa-7x mt-5"></i>
-                                <h2 class="font-weight-bold mt-4">{{ user.username }}</h2>
-                                <i class="fas fa-edit fa-2x mb-4"></i>
-                                <i class="far fa-trash-alt fa-2x mb-4"></i>
-                            </div>
-                        </div>
-                        <div class="col-sm-8 bg-white rounded-right">
-                            <h3 class="mt-3 text-center">Information</h3>
-                            <hr class="badge-primary mt-0 w-25">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p class="font-weight-bold">Email:</p>
-                                    <h6 class="text-muted">{{ user.email }}</h6>
-                                </div>
-                                <div class="col-sm-6">
-                                    <p class="font-weight-bold">Username:</p>
-                                    <h6 class="text-muted">{{ user.username }}</h6>
-                                </div>
-                            </div>
+                                </li>
+                                <li><br></li>
+                                <li>
+                                    <div class="btn-group-vertical btn-block">
+                                        <a href="" class="btn btn-default"><i class="fa fa-cog pull-right"></i> Modifier mon compte</a>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-</div>
+            <div class="col-md-9">
+                <div class="panel cover rounded shadow no-overflow" style="height:200px;">
+                    <h2 class="text-center">Vos publications</h2>
+                    <div class="panel-body"  v-for="post in postInfos" :key="post.id" >
+                        <div v-if="post.UserId == user.id" class="card-text">
+                            <!--- Post-->
+                                <div class="card-header">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="mr-2">
+                                                <img class="rounded-circle" width="45" src="@/assets/user.png" alt="">
+                                            </div>
+                                            <div class="ml-2">
+                                                <div class="h7 text-muted"> {{post.UserId}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ post.createdAt }} </div>
+                                        <h5 class="card-title">{{ post.title }}</h5>
+                                        <img v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
+                                        <p class="card-text">{{ post.content }}</p>
+                                </div>
+                                <button class="btn btn-large btn-block btn-danger" type="button" @click="deletePost(post.id)">
+                                    <span>Supprimer le Post</span>
+                                </button>
+                            
+                            <!-- Post End-->
+                        </div>
+            <div class="col-md-1">
+                        </div>
+                    
+                    </div>
+                </div>
+            </div>
+    </div>
+    </div>
 </template>
 
 <script>
 import { mapState } from "vuex"
+import axios from "axios"
 
 
 export default {
@@ -64,31 +81,50 @@ export default {
             return;
         }
         //Récupérer les infos du user
-        this.$store.dispatch('getUserProfile');  
+        this.$store.dispatch('getUserProfile'); 
+        this.$store.dispatch('getPosts')
     },
     computed: {
-        ...mapState({
-            user: 'userInfos',
-        })
+        ...mapState(
+            {
+                user: 'userInfos',
+            },
+        ),
+        ...mapState(['postInfos']),
     },
     methods: {
         logout: function () {
             this.$store.commit('logout');
             this.$router.push('/login');
         },
+
+        deletePost(id){ 
+            //Récupérer le Token
+            let objUser= localStorage.getItem("user");
+            let objJson = JSON.parse(objUser);
+            
+             axios.delete('http://localhost:3000/api/messages/'+id, {
+                headers: {
+                    "Authorization": "Bearer " + objJson.token
+                }
+            })
+             .then(() => {
+        //Renvoyer vers la pagposts
+                confirm('Êtes-vous sûre de vouloir supprimer votre post ?')
+            })
+            .catch(error => {
+                console.log(error)
+                alert("Vous n'avez pas les droits requis pour la suppression")
+            })
+
+        }
     }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.img-fluid {
-  width: 150px
-}
-.d-flex {
-    margin: 8%;
-    background-color: white;
-    box-shadow: 0 0 10px 10px rgba(0,0,0,0.5);
-    border-radius: 0.5rem;
+.container{
+    padding-top: 10px;
 }
 </style>
