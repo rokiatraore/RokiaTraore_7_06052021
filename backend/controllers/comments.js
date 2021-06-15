@@ -51,8 +51,9 @@ exports.deleteComment = async (req,res) => {
    try {
         let userId = await utilsAuth.getUserId(req.headers.authorization);
         let comment = await models.Comment.findOne({where: { id: req.params.id}})
+        let admin =  await models.User.findOne({ where: { id: userId } });
     
-        if(userId === comment.UserId) {
+        if(userId === comment.UserId || admin.isAdmin === true) {
             models.Comment.destroy({where:{ id: req.params.id}});
             res.status(200).json({ message: 'Commentaire supprimé !'})
         } 

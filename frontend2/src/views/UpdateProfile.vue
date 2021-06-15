@@ -22,18 +22,18 @@
     </nav>
   </div>
 
-    <Profile />
+    <UpdateProfile />
 </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Profile from '@/components/Profile.vue'
+import UpdateProfile from '@/components/UpdateProfile.vue'
 
 export default {
-  name: 'ProfileBody',
+  name: 'updateProfileBody',
   components: {
-    Profile,
+    UpdateProfile,
   },
   methods: {
      logout: function () {

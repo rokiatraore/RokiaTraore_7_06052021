@@ -22,7 +22,7 @@
           </div>
           <div class="form-group">
             <label for="password">Mot de passe</label>
-            <input type="password" v-model="password" />
+            <input type="password" autocomplete="current-password" v-model="password" />
           </div>
           <div v-if="mode == 'login' && status == 'errorLogin'">
             <span>Adresse mail et/ou mot de passe invalide</span>

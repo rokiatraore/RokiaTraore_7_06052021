@@ -1,87 +1,52 @@
 <template>
-<!-- <div class="container">
-    <div>
-        <router-link to="/posts/">Retour</router-link>
-    </div>
-    <div class="row main-row p-2" v-if="post">
-        <div class="col-lg-4 col-md-12 col-sm-12">
-            <div class="blog-img">
-                <img v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
-            </div>
+    <div class="container bootstrap snippets bootdey">
+        <div class="col-md-1"></div>
+    <div class="col-md-12" v-if="post" >
+    <div class="box box-widget">
+        <div class="box-header with-border">
+        <div class="user-block">
+            <img class="img-circle" src="@/assets/user.png" alt="User Image">
+            <span class="username">{{user.username}}</span>
+            <span class="description">{{post.createdAt}}</span>
         </div>
-        <div class="col-lg-8 col-md-12 col-sm-12">
-            <div class="post-title mb-3">
-                <h2>{{ post.title }}</h2>
-            </div>
-            <div class="post-date mb-2">
-                <span>3 Janvier</span>
-            </div>
-            <div class="post-content mb-2">
-                <p>{{ post.content }}  </p>
-            </div>
         </div>
-    </div>
-    <div class="post-comment mb-2">
-        <h1>Commentaires</h1>
-        <div>
-            <input type="text" v-model="commentaire" placeholder="Rédigez votre commentaire"/>
-        </div>
-        <p>{{ user.username }}</p>
-        <button  @click="submitComment()">
-        <span>Commenter !</span>
-        </button>
-        <div v-for="comment in post.comments" :key="comment.id" class="row">
-            <div class="col-1">{{comment.name }}</div>
-            <div class="col-4">{{ comment.message}}</div> 
-        </div>
-    </div>
-</div> -->
-<div class="container bootstrap snippets bootdey">
-    <div class="col-md-1"></div>
-<div class="col-md-12" v-if="post" >
-  <div class="box box-widget">
-    <div class="box-header with-border">
-      <div class="user-block">
-        <img class="img-circle" src="@/assets/user.png" alt="User Image">
-        <span class="username"><a href="#">Username</a></span>
-        <span class="description">{{post.createdAt}}</span>
-      </div>
-    </div>
 
-    <div class="box-body" style="display: block;">
-        <img v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
-        <h2>{{ post.title }}</h2>
-        <p>{{ post.content }} </p>
-    </div>
-    
-    <div class="box-footer text-center" style="display: block;">
-      <form>
-        <img class="img-responsive img-circle img-sm" src="@/assets/user.png" alt="Alt Text">
-        <div class="img-push">
-          <input type="text" class="form-control input-sm" placeholder="Ajouter un message" v-model="commentaire">
+        <div class="box-body" style="display: block;">
+            <img v-if="post.attachment != null" v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.content }} </p>
         </div>
-        <button class="btn btn-large btn-block btn-primary btn-comment" type="button" @click="submitComment()">
-            <span>Commenter !</span>
-        </button>
-      </form>
-    </div>
-    <div class="box-footer box-comments" style="display: block;" v-for="comment in post.comments" :key="comment.id" >
-      <div class="box-comment">
-        <img class="img-circle img-sm" src="@/assets/user.png" alt="User Image">
-        <div class="comment-text">
-          <span class="username">
-          {{comment.name }}
-          <span class="text-muted pull-right">{{ comment.createdAt}}</span>
-          </span>
-          {{ comment.message}}
+        
+        <div class="box-footer text-center" style="display: block;">
+        <form>
+            <img class="img-responsive img-circle img-sm" src="@/assets/user.png" alt="Alt Text">
+            <div class="img-push">
+            <input type="text" class="form-control input-sm" placeholder="Ajouter un message" v-model="commentaire">
+            </div>
+            <button class="btn btn-large btn-block btn-primary btn-comment" type="button" @click="submitComment()">
+                <span>Commenter !</span>
+            </button>
+        </form>
         </div>
-        <button @click="deleteComment(comment.id)">X</button>
-      </div>
+        <div class="box-footer box-comments" style="display: block;" v-for="comment in post.comments" :key="comment.id" >
+        <div class="box-comment">
+            <img class="img-circle img-sm" src="@/assets/user.png" alt="User Image">
+            <div class="comment-text">
+                <span class="username">
+                {{comment.name }}
+                <span class="text-muted pull-right">{{ comment.createdAt}} {{user.isAdmin}}</span>
+                </span>
+                <div class="boxMessage"> 
+                    {{ comment.message}} 
+                    <button v-if="user.id == comment.userId || user.isAdmin === true" @click="deleteComment(comment.id)">X</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="col-md-1"></div>
     </div>
-    <div class="col-md-1"></div>
-  </div>
-</div>
-</div>
+    </div>
+    </div>
 </template>
 
 <script>
@@ -111,6 +76,7 @@ export default {
              .then(() => {
         //Renvoyer vers la pagposts
                 alert('Votre commentaire a été posté !')
+                window.location.reload()
             })
             .catch(error => {
                 console.log(error)
@@ -121,6 +87,7 @@ export default {
             //Récupérer le Token
             let objUser= localStorage.getItem("user");
             let objJson = JSON.parse(objUser);
+            let admin = objJson.isAdmin;
             
              axios.delete('http://localhost:3000/api/comment/'+id, {
                 headers: {
@@ -130,6 +97,7 @@ export default {
              .then(() => {
         //Renvoyer vers la pagposts
                 confirm('Êtes-vous sûre de vouloir supprimer votre commentaire ?')
+                window.location.reload()
             })
             .catch(error => {
                 console.log(error)
@@ -269,6 +237,10 @@ body{
 .box-comments .text-muted {
     font-weight: 400;
     font-size: 12px;
+}
+.boxMessage {
+    display: flex;
+    justify-content: space-between;
 }
 .img-sm+.img-push {
     margin-left: 40px;

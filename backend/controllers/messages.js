@@ -22,15 +22,12 @@ const userId = utilsAuth.getUserId(req.headers.authorization);
             required:true,
           },
         ],
-        title: req.body.title,
         content: req.body.content,
         attachment: imageUrl,
         UserId : user.id
       });
 
-      res
-        .status(201)
-        .json({ post: post, messageRetour: "Votre post est ajouté" });
+      res.status(201).json({ post: post, messageRetour: "Votre post est ajouté" });
     } else {
       res.status(400).send({ error: "Erreur " });
     }
@@ -41,8 +38,12 @@ const userId = utilsAuth.getUserId(req.headers.authorization);
 
 
 exports.getAllMessage = (req, res) => {
+    //var order   = req.query.order;
     models.Message.findAll({
-        include: ["comments"]    
+      order: [ 
+        ['createdAt', 'DESC'],
+      ],
+      include: ["comments"]    
     })
     .then(messages => res.status(200).json(messages))
     .catch(error => res.status(400).json({ error }));
@@ -65,7 +66,7 @@ exports.modifyMessage = async (req, res) => {
 
     if(userId === post.UserId) {
       models.Message.update(
-        { title: req.body.title, content: req.body.content } || {
+        { content: req.body.content } || {
           ...req.body,
           attachment: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
         },
@@ -92,7 +93,7 @@ exports.deleteMessage = async (req, res) => {
     let userId = await utilsAuth.getUserId(req.headers.authorization);
     let post = await models.Message.findOne({where: { id: req.params.id}});
 
-    if(userId === post.UserId) {
+    if(userId === post.UserId || isAdmin === true) {
       if(post.imageUrl) {
         const filename = post.imageUrl.split("/images")[1];
         fs.unlink(`images/${filename}`, () => {

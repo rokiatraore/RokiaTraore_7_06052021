@@ -24,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Message.init({
-    title: DataTypes.STRING,
     attachment: DataTypes.STRING,
     content: DataTypes.STRING
   }, {

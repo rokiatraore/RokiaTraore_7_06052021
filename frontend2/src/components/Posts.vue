@@ -17,9 +17,6 @@
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
                                 <div class="form-group">
-                                    <textarea class="form-control" id="message" rows="1" placeholder="Titre du Post" v-model="title"></textarea>
-                                </div>
-                                <div class="form-group">
                                     <textarea class="form-control" id="message" rows="3" placeholder="Contenu du Post" v-model="content" ></textarea>
                                 </div>
                             </div>
@@ -49,7 +46,7 @@
                                     <img class="rounded-circle" width="45" src="@/assets/user.png" alt="">
                                 </div>
                                 <div class="ml-2">
-                                    <div class="h7 text-muted"> Nom d'utilisateur</div>
+                                    <div class="h7 text-muted"> {{ user.username}}</div>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +55,7 @@
                     <div class="card-body">
                         <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ post.createdAt }} </div>
                             <h5 class="card-title">{{ post.title }}</h5>
-                            <img v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
+                            <img v-if="post.attachment !== null" v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
                             <p class="card-text">{{ post.content }}</p>
                     </div>
                     <div class="card-footer text-center">
@@ -81,7 +78,6 @@ export default {
     name: 'Posts',
      data (){
         return{
-            title: '',
             file: '',
             content:'',
             userId:''
@@ -91,12 +87,18 @@ export default {
         console.log(this.$store.state.postInfos)
          //Retourner sur la page de connexion si le user n'est pas authentifié
         if (this.$store.state.user.userId == ""){
-            this.$router.push('/login');
+            this.$router.push('/');
             return;
         }
         this.$store.dispatch('getPosts')
+        this.$store.dispatch('getUserProfile');
     },
     computed: {
+        ...mapState(
+            {
+                user: 'userInfos',
+            },
+        ),
         ...mapState(['postInfos']),
     },
     methods: {
@@ -113,7 +115,6 @@ export default {
             const formData = new FormData();
             formData.append('image', this.file)
             formData.append('content', this.content)
-            formData.append('title', this.title)
 
             //Récupérer le Token
             let objUser= localStorage.getItem("user");
@@ -124,9 +125,16 @@ export default {
                     "Authorization": "Bearer " + objJson.token
             }
             })
-             .then(() => {
-                alert('Votre Message a été posté !')
-                //this.$router.push('/posts');
+             .then(response => {
+                 if(response.data.post.content === "" && response.data.post.attachment === null) {
+                     alert('Le contenu de votre post est vide.')
+                     console.log(response.data)
+                 }
+                else {
+                    alert('Votre Message a été posté !')
+                    console.log(response.data)
+                    window.location.reload()
+                }
             })
             .catch(error => {
                 console.log(error)

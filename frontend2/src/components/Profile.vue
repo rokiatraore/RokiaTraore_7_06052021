@@ -10,14 +10,17 @@
                                     <img class="img-fluid" src="@/assets/user.png" alt="Marint month">
                                 </li>
                                 <li class="text-center">
-                                    <h4 class="text-capitalize">{{ user.username }}</h4>
+                                    <h4 class="text-capitalize">{{ user.username }}{{ user.id }}</h4>
                                     <p class="text-muted text-capitalize"><i class="far fa-envelope"></i> {{ user.email }}</p>
 
                                 </li>
                                 <li><br></li>
                                 <li>
                                     <div class="btn-group-vertical btn-block">
-                                        <a href="" class="btn btn-default"><i class="fa fa-cog pull-right"></i> Modifier mon compte</a>
+                                        <router-link to="/updateprofile/" class="btn btn-default"><i class="fa fa-cog pull-right"></i> Modifier mon compte</router-link>
+                                        <button class="btn btn-default btn-danger" type="button" @click="deleteProfile(user.id)">
+                                            <span>Supprimer mon profil</span>
+                                        </button>
                                     </div>
                                 </li>
                             </ul>
@@ -42,23 +45,22 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                                 <div class="card-body">
                                     <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ post.createdAt }} </div>
                                         <h5 class="card-title">{{ post.title }}</h5>
-                                        <img v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
+                                        <img v-if="post.attachment !== null" v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
                                         <p class="card-text">{{ post.content }}</p>
                                 </div>
                                 <button class="btn btn-large btn-block btn-danger" type="button" @click="deletePost(post.id)">
                                     <span>Supprimer le Post</span>
-                                </button>
-                            
-                            <!-- Post End-->
+                                </button> 
+                                <span class="container my-5">
+                                    <router-link :to="`/updatepost/${post.id}`" class="btn btn-success" > Modifier</router-link>
+                                </span>
                         </div>
-            <div class="col-md-1">
-                        </div>
-                    
+                        <!-- Post End-->
+                        <div class="col-md-1"></div>
                     </div>
                 </div>
             </div>
@@ -70,14 +72,18 @@
 import { mapState } from "vuex"
 import axios from "axios"
 
-
 export default {
     name: 'Profile',
+    data(){
+        return {
+
+}
+    },
     mounted: function() {
         console.log(this.$store.state.user);
         //Retourner sur la page de connexion si le user n'est pas authentifié
         if (this.$store.state.user.userId == ""){
-            this.$router.push('/login');
+            this.$router.push('/');
             return;
         }
         //Récupérer les infos du user
@@ -95,7 +101,7 @@ export default {
     methods: {
         logout: function () {
             this.$store.commit('logout');
-            this.$router.push('/login');
+            this.$router.push('/');
         },
 
         deletePost(id){ 
@@ -109,15 +115,38 @@ export default {
                 }
             })
              .then(() => {
-        //Renvoyer vers la pagposts
+                //Renvoyer vers la pagposts
                 confirm('Êtes-vous sûre de vouloir supprimer votre post ?')
+                window.location.reload()
+                })
+            .catch(error => {
+                console.log(error)
+                alert("Vous n'avez pas les droits requis pour la suppression")
+            })
+        },
+
+         deleteProfile(id){ 
+            //Récupérer le Token
+            let objUser= localStorage.getItem("user");
+            let objJson = JSON.parse(objUser);
+            
+             axios.delete('http://localhost:3000/api/profile/'+id, {
+                headers: {
+                    "Authorization": "Bearer " + objJson.token
+                }
+            })
+             .then(() => {
+        //Renvoyer vers la pagposts
+                confirm('Êtes-vous sûre de vouloir supprimer votre profile ?')
+                    this.$store.commit('logout');
+                    this.$router.push('/');
             })
             .catch(error => {
                 console.log(error)
                 alert("Vous n'avez pas les droits requis pour la suppression")
             })
 
-        }
+        },
     }
 }
 </script>
@@ -127,4 +156,5 @@ export default {
 .container{
     padding-top: 10px;
 }
+
 </style>
