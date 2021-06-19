@@ -45,6 +45,7 @@ const store = new Vuex.Store ({
     getters : {
         //Renvoi le post selon son ID
         post: (state) => (id) => {
+            console.log(state)
             return state.postInfos.find(post => post.id === id);
         }
     },
@@ -87,10 +88,13 @@ const store = new Vuex.Store ({
                 .then(response => {
                     commit('setStatus', '');
                     commit('logUser', response.data);
+                    console.log(response.data)
                     resolve(response)
+
                 })
                 .catch(error => {
                     commit('setStatus', 'errorLogin');
+                    console.log(error)
                     reject(error)
                 });
             })    

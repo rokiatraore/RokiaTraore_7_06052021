@@ -1,15 +1,29 @@
 <template>
-    <div class="container gedf-wrapper">
+    <div class="container-fluid gedf-wrapper">
         <div class="row">
-            <div class="col-md-1">
+            <!--- \\\\\\\ Profile-->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body-profile">
+                        <img class="img-profile" width="45" src="@/assets/user.png" alt="">
+                        <div class="h5">{{user.username}}</div>
+                        <div class="h7 text-muted">{{user.email}}</div>
+                        <div class="h7">Chargé de clientèle </div>
+                    </div>
+                    <div class="my-profile">
+                        <router-link :to="`/profile`" class="my-profile-link"><i class="far fa-id-badge"></i> Mon Profil</router-link>
+
+                    </div>
+                </div>
             </div>
-            <div class="col-md-10 gedf-main">
-                <!--- Submit Post-->
-                <div class="card gedf-card">
-                    <div class="card-header card-header-submit">
+            <!--- Profile /////-->
+            <div class="col-md-6 gedf-main">
+                <!--- \\\\\\ Add a Post-->
+                <div class="card gedf-card" >
+                    <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Poster une publication</a>
+                                <a class="nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Ma Publication</a>
                             </li>
                         </ul>
                     </div>
@@ -17,27 +31,28 @@
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
                                 <div class="form-group">
-                                    <textarea class="form-control" id="message" rows="3" placeholder="Contenu du Post" v-model="content" ></textarea>
+                                    <label class="sr-only" for="message">post</label>
+                                    <textarea class="form-control" id="message" rows="3" placeholder="Quoi de neuf ?" v-model="content" ></textarea>
                                 </div>
-                            </div>
                             <div class="upload-image">
                                 <label>Télécharger une image</label>
                                 <input type="file" id="file" ref="file" @change="fileSelected()">
                                 <div class="preview">
-                                    <img id="file-preview">
+                                    <img id="file-preview" class="img-fluid">
                                 </div>
+                            </div>
                             </div>
                         </div>
                         <div class="btn-toolbar justify-content-between">
                             <div class="btn-group">
-                                <button type="submit" class="btn btn-poster" @click="submitPost()">Poster</button>
+                                <button type="submit" class="btn btn-primary" @click="submitPost()" >Poster</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Submit Post end-->
+                <!-- Add a Post /////-->
 
-                <!--- Post-->
+                <!--- \\\\\\\Post-->
                 <div class="card gedf-card" v-for="post in postInfos" :key="post.id">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
@@ -46,25 +61,55 @@
                                     <img class="rounded-circle" width="45" src="@/assets/user.png" alt="">
                                 </div>
                                 <div class="ml-2">
-                                    <div class="h7 text-muted"> {{ user.username}}</div>
+                                    <div class="h5 m-0">{{ user.username}}</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div >
+                                    <button class="btn btn-link " type="button" v-if="user.isAdmin === true" @click="deletePostAdmin(post.id)">
+                                        <i class="far fa-trash-alt delete-post"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
                     </div>
                     <div class="card-body">
-                        <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ post.createdAt }} </div>
-                            <h5 class="card-title">{{ post.title }}</h5>
-                            <img v-if="post.attachment !== null" v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
-                            <p class="card-text">{{ post.content }}</p>
+                        <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ post.createdAt }}</div>
+
+                        <p class="card-text">
+                            {{ post.content }}
+                        </p>
+                        <img v-if="post.attachment !== null" v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
+
                     </div>
-                    <div class="card-footer text-center">
-                        <router-link :to="`/post/${post.id}`" class="getPost"><i class="far fa-eye"></i> Voir le post</router-link>
+                    <div class="card-footer">
+                        <router-link :to="`/post/${post.id}`" class="card-link get-post"><i class="fas fa-eye"></i> Voir le post</router-link>
                     </div>
                 </div>
-                <!-- Post End-->
+                <!-- Post /////-->
             </div>
-            <div class="col-md-1">
+
+            <div class="col-md-3">
+                <!-- ///// Favorite (fictif)-->
+                <h5 class="card-title">Mes favoris</h5>
+                <div class="card gedf-card">
+                    <div class="card-body">
+                        <img class="img-fluid" width="45" src="@/assets/user.png" alt="">
+                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente ea quis repudiandae tenetur 
+                            assumenda consectetur, voluptates rem consequuntur ullam ipsam similique iusto facere, tempora enim nulla quas nisi. Velit, tenetur..
+                        </p>
+                    </div>
+                </div>
+                <div class="card gedf-card">
+                    <div class="card-body">
+                        <img class="img-fluid" width="45" src="@/assets/user.png" alt="">
+                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente ea quis repudiandae tenetur 
+                            assumenda consectetur, voluptates rem consequuntur ullam ipsam similique iusto facere, tempora enim nulla quas nisi. Velit, tenetur..
+                        </p>
+                    </div>
+                </div>
+                <!-- Favorite /////-->
             </div>
         </div>
     </div>
@@ -133,13 +178,33 @@ export default {
                 else {
                     alert('Votre Message a été posté !')
                     console.log(response.data)
-                    window.location.reload()
+                   // window.location.reload()
                 }
             })
             .catch(error => {
                 console.log(error)
             })
-        }
+        },
+        deletePostAdmin(id){ 
+            //Récupérer le Token
+            let objUser= localStorage.getItem("user");
+            let objJson = JSON.parse(objUser);
+            
+             axios.delete('http://localhost:3000/api/messages/'+id, {
+                headers: {
+                    "Authorization": "Bearer " + objJson.token
+                }
+            })
+             .then(() => {
+                //Renvoyer vers la pagposts
+                confirm('Êtes-vous sûre de vouloir supprimer votre post ?')
+                window.location.reload()
+                })
+            .catch(error => {
+                console.log(error)
+                alert("Vous n'avez pas les droits requis pour la suppression")
+            })
+        },
     }
 }
 </script>
@@ -149,6 +214,35 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 .container {
     font-family: 'Roboto', sans-serif;
+}
+
+.card-body-profile{
+    text-align: center;
+}
+
+.img-profile {
+    width: 100%;
+    height: auto;
+}
+.my-profile{
+    padding-top: 16px;
+    text-align: center;
+}
+.my-profile-link, .get-post{
+    text-decoration: none;
+    color: #0a58ca;
+}
+
+.preview{
+    display: flex;
+    justify-content: center;
+}
+#file-preview{
+    max-width: 100%;
+    height: auto;
+}
+.delete-post{
+    color: red;
 }
 .gedf-wrapper {
     margin-top: 0.97rem;
@@ -178,5 +272,9 @@ export default {
 .getPost {
     text-decoration: none;
     color: black;
+}
+
+.btn-group {
+    padding-top: 10px;
 }
 </style>

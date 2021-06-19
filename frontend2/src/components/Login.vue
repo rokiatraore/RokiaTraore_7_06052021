@@ -74,7 +74,8 @@ export default {
     switchToLogin() {
       this.mode = 'login';
     },
-    login() {
+    login(e) {
+      e.preventDefault();
       const self = this;
       //Appel API dans le store
       this.$store.dispatch('login', {
@@ -83,6 +84,7 @@ export default {
       })
       .then(() => {
         //Renvoyer vers la pagposts
+        console.log("Connexion")
         self.$router.push('/posts')
       })
       .catch(error => {
@@ -90,6 +92,7 @@ export default {
       })
     },
     createAccount() {
+      //e.preventDefault();
       const self = this;
       //Appel API dans le store
       this.$store.dispatch('createAccount', {

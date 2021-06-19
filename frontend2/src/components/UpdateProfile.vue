@@ -9,7 +9,7 @@
             <textarea class="form-control title" id="email" rows="1" :value="user.email"></textarea>
         </div>
         <button class="btn btn-large btn-block btn-success" type="button" @click="updateProfile">
-            <span>Modifier mon profile</span>
+            <span>Modifier mon compte</span>
         </button> 
 
     </div>

@@ -1,39 +1,45 @@
 <template>
     <div class="container bootstrap snippets bootdey">
-        <div class="col-md-1"></div>
-        <div class="col-md-12" v-if="post" >
-            <div class="box box-widget">
-                <div class="box-header with-border">
-                    <div class="user-block">
-                        <img class="img-circle" src="@/assets/user.png" alt="User Image">
-                        <span class="username"><a href="#">Username</a></span>
-                        <span class="description">{{post.createdAt}}</span>
+        <div class="row">
+            <div ></div>
+                <div class=" gedf-main" v-if="post" >
+                    <!--- \\\\\\\Add a Post-->
+                    <div class="card gedf-card" >
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <p>Ma Publication</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                                    <div class="form-group">
+                                        <label class="sr-only" for="content">Message : </label>
+                                        <textarea class="form-control" id="content" rows="3" :value="post.content" ></textarea>
+                                    </div>
+                                <div class="upload-image">
+                                    <label>Télécharger une nouvelle image</label>
+                                    <input type="file" id="newFile" ref="file1" name="Choisir une image" @change="newFileSelected()">
+                                    <div class="preview">
+                                        <img id="newFile-preview"  :src="post.attachment" alt="image du post" class="img-fluid" >
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="btn-toolbar justify-content-between">
+                                <div class="btn-group">
+                                    <button class="btn btn-large btn-block btn-success" type="button" @click="updatePost(post.id)">
+                                        <span>Modifier le Post</span>
+                                    </button>                             
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-            <div class="box-body" style="display: block;">
-                <div class="form-group">
-                    <label for=""> Titre : </label>
-                    <textarea class="form-control title" id="title" rows="1" :value="post.title"></textarea>
-                </div>
-                <div class="upload-image">
-                    <label>Télécharger une image</label>
-                    <input type="file" id="file" ref="file" name="Choisir une image" @change="fileSelected()">
-                    <div class="preview">
-                        <img id="newFile-preview" :src="post.attachment" alt="image du post" class="img-fluid" >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for=""> Contenu : </label>
-                    <textarea class="form-control" id="content" rows="1" :value="post.content"></textarea>
-                </div>
-                <button class="btn btn-large btn-block btn-success" type="button" @click="updatePost(post.id)">
-                    <span>Modifier le Post</span>
-                </button> 
-            </div>
-            <div class="col-md-1"></div>
         </div>
-    </div>
+        
+        </div>
     </div>
 </template>
 
@@ -47,12 +53,12 @@ export default {
     name: 'updatePost',
     data (){
         return{
-            file: '',
+            file: null,
         }
     },
     methods: {
-         fileSelected(){
-            this.file = this.$refs.file.files[0];
+         newFileSelected(){
+            this.file = this.$refs.file1.files[0];
             let src = URL.createObjectURL(this.file);
             let preview = document.getElementById('newFile-preview');
             preview.src = src;
@@ -64,7 +70,6 @@ export default {
                     const newFile = new FormData();
                     newFile.append('image', this.file)
 
-                    let newTitle = document.getElementById('title').value;
                     let newContent = document.getElementById('content').value;
     
                     //Récupérer le Token
@@ -73,7 +78,6 @@ export default {
                     
                     axios.put('http://localhost:3000/api/messages/'+ id ,
                         {
-                            title: newTitle,
                             content: newContent,
                             image: newFile
                         },
@@ -84,7 +88,7 @@ export default {
                         }
                     )
                     .then(() => {
-                        alert('Votre post a été modifié !')
+                        alert('Votre post a été modifié !' + JSON.stringify(newFile) + newContent)
                         //window.location.reload()
                     })
                     .catch(error => {
