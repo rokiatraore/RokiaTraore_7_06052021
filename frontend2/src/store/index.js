@@ -42,13 +42,6 @@ const store = new Vuex.Store ({
             comments:[]
         },
     },
-    getters : {
-        //Renvoi le post selon son ID
-        post: (state) => (id) => {
-            console.log(state)
-            return state.postInfos.find(post => post.id === id);
-        }
-    },
     mutations: {
         setStatus: (state, status) => {
             state.status = status;

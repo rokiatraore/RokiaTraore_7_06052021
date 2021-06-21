@@ -1,7 +1,7 @@
 <template>
     <div class="container bootstrap snippets bootdey">
         <div class="row">
-            <div class="col-md-9 gedf-main" v-if="post">
+            <div class="col-md-9 gedf-main">
                 <div class="card-header-one">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex justify-content-between align-items-center">
@@ -16,10 +16,10 @@
                 </div>
             <div class="card-body">
                 <div class="text-muted h7 mb-2"> 
-                    <i class="fa fa-clock-o"></i> {{ post.createdAt }}
+                    <i class="fa fa-clock-o"></i> {{ posts.createdAt }}
                 </div>
-                <p class="card-text"> {{ post.content }}</p>
-                <img v-if="post.attachment !== null" v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
+                <p class="card-text"> {{ posts.content }}</p>
+                <img v-if="posts.attachment !== null" v-bind:src="posts.attachment" alt="image du post" class="img-fluid"/>
 
             </div>
             <div class="box-footer text-center" style="display: block;">
@@ -33,7 +33,7 @@
                     </button>
                 </form>
             </div>
-            <div class="box-footer box-comments" style="display: block;" v-for="comment in post.comments" :key="comment.id" >
+            <div class="box-footer box-comments" style="display: block;" v-for="comment in posts.comments" :key="comment.id" >
                 <div class="box-comment">
                     <img class="img-circle img-sm" src="@/assets/user.png" alt="User Image">
                     <div class="comment-text">
@@ -86,8 +86,27 @@ export default {
     data (){
         return{
             commentaire:'',
-            nom:''
+            nom:'',
+            posts:{}
         }
+    },
+    created () {
+          const id = (parseInt(this.$route.params.id));
+            let objUser= localStorage.getItem("user");
+            let objJson = JSON.parse(objUser);
+
+            axios.get('http://localhost:3000/api/messages/' + id, {
+                 headers: {
+                    "Authorization": "Bearer " + objJson.token
+                }
+            }) 
+                .then(response => {
+                   this.posts = response.data;
+                   console.log(this.posts)
+                })
+                .catch(error => {
+                    console.log(error)
+                });
     },
     methods: {
         submitComment() {
@@ -136,16 +155,14 @@ export default {
     },
     mounted: function() {
         //Récupérer les infos du user
-        this.$store.dispatch('getUserProfile');  
+        this.$store.dispatch('getUserProfile'); 
     },
     computed: {
-        post () {
-            return this.$store.getters.post(parseInt(this.$route.params.id));
-        },
         ...mapState({
             user: 'userInfos',
-        })
-    }
+        }),
+    },
+    
 }
 </script>
 

@@ -2,7 +2,7 @@
     <div class="container bootstrap snippets bootdey">
         <div class="row">
             <div ></div>
-                <div class=" gedf-main" v-if="post" >
+                <div class=" gedf-main" >
                     <!--- \\\\\\\Add a Post-->
                     <div class="card gedf-card" >
                         <div class="card-header">
@@ -54,7 +54,26 @@ export default {
     data (){
         return{
             file: null,
+            post: {}
         }
+    },
+    created () {
+          const id = (parseInt(this.$route.params.id));
+            let objUser= localStorage.getItem("user");
+            let objJson = JSON.parse(objUser);
+
+            axios.get('http://localhost:3000/api/messages/' + id, {
+                 headers: {
+                    "Authorization": "Bearer " + objJson.token
+                }
+            }) 
+                .then(response => {
+                   this.post = response.data;
+                   console.log(this.post)
+                })
+                .catch(error => {
+                    console.log(error)
+                });
     },
     methods: {
          newFileSelected(){
@@ -102,9 +121,6 @@ export default {
         this.$store.dispatch('getUserProfile');  
     },
     computed: {
-        post () {
-            return this.$store.getters.post(parseInt(this.$route.params.id));
-        },
         ...mapState({
             user: 'userInfos',
         })

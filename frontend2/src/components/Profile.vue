@@ -31,65 +31,67 @@
                 </div>
             </div>
         </div>
-            <div class="col-md-9 gedf-main" v-for="post in postInfos" :key="post.id">
-                <!--- \\\\\\\Post-->
-                <div class="card gedf-card"  v-if="post.UserId === user.id"  >
-                    <h2 class="text-center">Mes publications</h2>
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
+            <!--- \\\\\\\Post-->
+            <div class="col-md-9 gedf-main post" >
+                <h2 class="text-center" >Mes publications</h2>
+                <div class="post" v-for="post in posts" :key="post.id" >
+                    <div class="card gedf-card" v-if="post.UserId === user.id" >
+                        <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="mr-2">
-                                    <img class="rounded-circle" width="45" src="@/assets/user.png" alt="">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="mr-2">
+                                        <img class="rounded-circle" width="45" src="@/assets/user.png" alt="">
+                                    </div>
+                                    <div class="ml-2">
+                                        <div class="h5 m-0">{{ post.UserId}} - {{user.id}}</div>
+                                    </div>
                                 </div>
-                                <div class="ml-2">
-                                    <div class="h5 m-0">{{ post.UserId}} {{user.id}}</div>
+                                <div>
+                                    <div >
+                                        <span class="container my-5">
+                                            <router-link :to="`/updatepost/${post.id}`" class="btn btn-success" > Modifier</router-link>
+                                        </span>
+                                        <button class="btn btn-link " type="button"  @click="deletePost(post.id)">
+                                            <i class="far fa-trash-alt delete-post"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <div >
-                                    <span class="container my-5">
-                                        <router-link :to="`/updatepost/${post.id}`" class="btn btn-success" > Modifier</router-link>
+
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ post.createdAt }}</div>
+
+                            <p class="card-text">
+                                {{ post.content }}
+                            </p>
+                            <img v-if="post.attachment !== null" v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
+
+                        </div>
+                        <div class="box-footer box-comments" style="display: block;" v-for="comment in post.comments" :key="comment.id" >
+                            <h4 class="title-comment">Commentaires</h4>
+                            <div class="box-comment">
+                                <img class="img-circle img-sm" src="@/assets/user.png" alt="User Image">
+                                <div class="comment-text">
+                                    <span class="username">
+                                    {{comment.name }}
+                                    <span class="text-muted pull-right">{{ comment.createdAt}}</span>
                                     </span>
-                                    <button class="btn btn-link " type="button"  @click="deletePost(post.id)">
-                                        <i class="far fa-trash-alt delete-post"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    
-                    <div class="card-body">
-                        <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ post.createdAt }}</div>
-
-                        <p class="card-text">
-                            {{ post.content }}
-                        </p>
-                        <img v-if="post.attachment !== null" v-bind:src="post.attachment" alt="image du post" class="img-fluid"/>
-
-                    </div>
-                    <div class="box-footer box-comments" style="display: block;" v-for="comment in post.comments" :key="comment.id" >
-                        <h4 class="title-comment">Commentaires</h4>
-                        <div class="box-comment">
-                            <img class="img-circle img-sm" src="@/assets/user.png" alt="User Image">
-                            <div class="comment-text">
-                                <span class="username">
-                                {{comment.name }}
-                                <span class="text-muted pull-right">{{ comment.createdAt}}</span>
-                                </span>
-                                <div class="boxMessage"> 
-                                    {{ comment.message}} 
-                                    <button type="button" class="btn btn-link" v-if="user.id == comment.userId || user.isAdmin === true" @click="deleteComment(comment.id)">
-                                        <i class="far fa-trash-alt delete-post"></i>
-                                    </button>
+                                    <div class="boxMessage"> 
+                                        {{ comment.message}} 
+                                        <button type="button" class="btn btn-link" v-if="user.id == comment.userId || user.isAdmin === true" @click="deleteComment(comment.id)">
+                                            <i class="far fa-trash-alt delete-post"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <h2 class="text-center" v-if="post[0].UserId !== user.id">Vous n'avez aucune publications</h2>
                 </div>
-                <h2 class="text-center" v-else>Vous n'avez aucune publications</h2>
-                <!-- Post /////-->
             </div>
+            <!-- Post /////-->
     </div>
     </div>
 </template>
@@ -102,8 +104,26 @@ export default {
     name: 'Profile',
     data(){
         return {
+            posts: {}
 
-}
+        }
+    },
+    created () {
+            let objUser= localStorage.getItem("user");
+            let objJson = JSON.parse(objUser);
+
+            axios.get('http://localhost:3000/api/messages/', {
+                 headers: {
+                    "Authorization": "Bearer " + objJson.token
+                }
+            }) 
+                .then(response => {
+                   this.posts = response.data;
+                   console.log(this.posts)
+                })
+                .catch(error => {
+                    console.log(error)
+                });
     },
     mounted: function() {
         console.log(this.$store.state.user);
@@ -114,7 +134,7 @@ export default {
         }
         //Récupérer les infos du user
         this.$store.dispatch('getUserProfile'); 
-        this.$store.dispatch('getPosts')
+        //this.$store.dispatch('getPosts')
     },
     computed: {
         ...mapState(
@@ -122,9 +142,10 @@ export default {
                 user: 'userInfos',
             },
         ),
-        ...mapState(['postInfos']),
+         ...mapState(['postInfos']),
         
     },
+    
     methods: {
         logout: function () {
             this.$store.commit('logout');
@@ -216,6 +237,10 @@ export default {
 .profile-card{
     background-color: white;
     overflow-wrap: anywhere;
+}
+
+.post {
+    padding-bottom: 33px;
 }
 
 .box-footer {
