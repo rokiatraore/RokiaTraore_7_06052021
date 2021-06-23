@@ -20,7 +20,6 @@ exports.signup = (req, res) => {
                         password: hash,
                         isAdmin: false
                     })
-                    //Enregistrer dans la base de données
                     .then( newUser => res.status(201).json({ 
                         message: 'Utilisateur créé',
                         'userId': newUser.id
