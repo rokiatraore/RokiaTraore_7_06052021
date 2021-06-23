@@ -87,6 +87,7 @@ export default {
         updatePost(id) {
                     //Récupérer les informations du message
                     const newFile = new FormData();
+                    
                     newFile.append('image', this.file)
                     console.log(this.file)
 
@@ -103,12 +104,12 @@ export default {
                         {
                             headers: {
                                 "Authorization": "Bearer " + objJson.token,
-                                'Content-Type': 'multipart/form-data'
                             }
                         }
                     )
-                    .then(() => {
+                    .then(response => {
                         alert('Votre post a été modifié !')
+                        console.log(response)
                         //this.$router.push('/profile');
                     })
                     .catch(error => {

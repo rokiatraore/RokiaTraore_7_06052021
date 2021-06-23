@@ -123,8 +123,8 @@ export default {
     name: 'Posts',
      data (){
         return{
-            file: '',
-            content:'',
+            file: null,
+            content:"",
             userId:''
         }
     },
@@ -156,6 +156,7 @@ export default {
             console.log(this.file)
         },
         submitPost() {
+            
             //Récupérer les informations du message
             const formData = new FormData();
             formData.append('image', this.file)
@@ -176,9 +177,8 @@ export default {
                      console.log(response.data)
                  }
                 else {
-                    alert('Votre Message a été posté !')
                     console.log(response.data)
-                   // window.location.reload()
+                    window.location.reload()
                 }
             })
             .catch(error => {

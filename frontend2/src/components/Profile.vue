@@ -48,9 +48,9 @@
                                 </div>
                                 <div>
                                     <div >
-                                        <span class="container my-5">
+                                        <!-- <span class="container my-5">
                                             <router-link :to="`/updatepost/${post.id}`" class="btn btn-success" > Modifier</router-link>
-                                        </span>
+                                        </span> -->
                                         <button class="btn btn-link " type="button"  @click="deletePost(post.id)">
                                             <i class="far fa-trash-alt delete-post"></i>
                                         </button>
