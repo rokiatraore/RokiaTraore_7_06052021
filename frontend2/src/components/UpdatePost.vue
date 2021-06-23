@@ -88,6 +88,7 @@ export default {
                     //Récupérer les informations du message
                     const newFile = new FormData();
                     newFile.append('image', this.file)
+                    console.log(this.file)
 
                     let newContent = document.getElementById('content').value;
     
@@ -95,20 +96,20 @@ export default {
                     let objUser= localStorage.getItem("user");
                     let objJson = JSON.parse(objUser);
                     
-                    axios.put('http://localhost:3000/api/messages/'+ id ,
-                        {
+                    axios.put('http://localhost:3000/api/messages/'+ id ,{
                             content: newContent,
-                            image: newFile
+                            attachment: newFile
                         },
                         {
                             headers: {
-                                "Authorization": "Bearer " + objJson.token
+                                "Authorization": "Bearer " + objJson.token,
+                                'Content-Type': 'multipart/form-data'
                             }
                         }
                     )
                     .then(() => {
-                        alert('Votre post a été modifié !' + JSON.stringify(newFile) + newContent)
-                        //window.location.reload()
+                        alert('Votre post a été modifié !')
+                        //this.$router.push('/profile');
                     })
                     .catch(error => {
                         console.log(error)

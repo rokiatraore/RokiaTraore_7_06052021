@@ -115,7 +115,10 @@ export default {
             let objUser= localStorage.getItem("user");
             let objJson = JSON.parse(objUser);
 
-            axios.post('http://localhost:3000/api/comment/'+this.$route.params.id,{message: this.commentaire}, {
+            axios.post('http://localhost:3000/api/comment/'+this.$route.params.id,{
+                message: this.commentaire
+                }, 
+                {
                 headers: {
                     "Authorization": "Bearer " + objJson.token
                 }

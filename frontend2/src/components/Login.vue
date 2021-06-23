@@ -14,15 +14,15 @@
         <form>
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="text" v-model="email" />
+            <input type="text" v-model="email" required />
           </div>
           <div class="form-group" v-if="mode =='create'">
             <label for="username">Nom d'utilisateur</label>
-            <input type="text" v-model="username" />
+            <input type="text" v-model="username" required  />
           </div>
           <div class="form-group">
             <label for="password">Mot de passe</label>
-            <input type="password" autocomplete="current-password" v-model="password" />
+            <input type="password"  v-model="password" required />
           </div>
           <div v-if="mode == 'login' && status == 'errorLogin'">
             <span>Adresse mail et/ou mot de passe invalide</span>
@@ -52,9 +52,9 @@ export default {
   data(){
     return{
       mode: 'login',
-      username: '',
-      email: '',
-      password:'',
+      username: null,
+      email: null,
+      password: null,
     }
   },
   mounted: function () {
@@ -76,24 +76,21 @@ export default {
     },
     login(e) {
       e.preventDefault();
-      const self = this;
       //Appel API dans le store
       this.$store.dispatch('login', {
         email: this.email,
         password: this.password
       })
       .then(() => {
-        //Renvoyer vers la pagposts
-        console.log("Connexion")
-        self.$router.push('/posts')
+        //Renvoyer vers la page posts
+        this.$router.push('/posts')
       })
       .catch(error => {
         console.log(error)
       })
     },
-    createAccount() {
-      //e.preventDefault();
-      const self = this;
+    createAccount(e) {
+      e.preventDefault();
       //Appel API dans le store
       this.$store.dispatch('createAccount', {
         email: this.email,
@@ -101,7 +98,7 @@ export default {
         password: this.password
       })
       .then(() => {
-        self.login();
+       this.$router.push('/posts')
       })
       .catch(error => {
         console.log(error)

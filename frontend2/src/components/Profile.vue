@@ -43,7 +43,7 @@
                                         <img class="rounded-circle" width="45" src="@/assets/user.png" alt="">
                                     </div>
                                     <div class="ml-2">
-                                        <div class="h5 m-0">{{ post.UserId}} - {{user.id}}</div>
+                                        <div class="h5 m-0">{{ post.UserId}}</div>
                                     </div>
                                 </div>
                                 <div>
@@ -88,7 +88,7 @@
                             </div>
                         </div>
                     </div>
-                    <h2 class="text-center" v-if="post[0].UserId !== user.id">Vous n'avez aucune publications</h2>
+                    <!-- <h2 class="text-center" v-else>Vous n'avez aucune publications</h2> -->
                 </div>
             </div>
             <!-- Post /////-->
