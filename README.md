@@ -32,3 +32,4 @@ Vérifiez les identifiants dans le fichier config.json du dossier Backend puis i
 ## Utilisation
 
 Pour utiliser l'application en tant qu'administrateur, connectez-vous avec le mail admin@groupomania.com et le mdp : admin
+Pour utiliser l'application en tant qu'utilisateur, connectez-vous avec le mail user1@groupomania.com et le mdp : user1
