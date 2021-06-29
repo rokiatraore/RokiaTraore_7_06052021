@@ -45,7 +45,7 @@
                         </div>
                         <div class="btn-toolbar justify-content-between">
                             <div class="btn-group">
-                                <button type="submit" class="btn btn-primary" @click="submitPost()" >Poster</button>
+                                <button class="btn btn-primary" @click="submitPost()" >Poster</button>
                             </div>
                         </div>
                     </div>
@@ -173,8 +173,7 @@ export default {
             })
              .then(response => {
                  if(response.data.post.content === "" && response.data.post.attachment === null) {
-                     alert('Le contenu de votre post est vide.')
-                     console.log(response.data)
+                     return false
                  }
                 else {
                     console.log(response.data)
@@ -184,6 +183,7 @@ export default {
             .catch(error => {
                 console.log(error)
             })
+            return false;
         },
         deletePostAdmin(id){ 
             //Récupérer le Token
