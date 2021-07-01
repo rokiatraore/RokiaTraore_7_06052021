@@ -9,7 +9,7 @@
                                 <img class="rounded-circle" width="45" src="@/assets/user.png" alt="">
                             </div>
                             <div class="ml-2">
-                                <div class="h5 m-0">{{ user.username}}</div>
+                                <div class="h5 m-0">{{ posts.UserId}}</div>
                             </div>
                         </div>
                     </div>
